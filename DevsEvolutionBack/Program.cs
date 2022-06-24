@@ -31,7 +31,7 @@ app.MapGet("/MyHelloWorld", () =>
     //        summaries[Random.Shared.Next(summaries.Length)]
     //    ))
     //    .ToArray();
-    return "Hello World!!!!";
+    return "Hello, New World!!!";
     // get put post delete
 })
 .WithName("GetWeatherForecast");
