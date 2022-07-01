@@ -12,7 +12,7 @@ using DevsEvolutionBack.Models;
 
 namespace DevsEvolutionBack.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/materials")]
     [ApiController]
     public class MaterialsController : ControllerBase
     {
@@ -26,8 +26,8 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Get()
         {
             string query = @"
-                        select id,name,type,description,DATE_FORMAT(DateOfJoining,'%Y-%m-%d') as date from 
-                        dbo.materials
+                        select id,name,type,description,DATE_FORMAT(date,'%Y-%m-%d') as date from 
+                        materials
             ";
 
             DataTable table = new DataTable();
@@ -54,7 +54,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Post(Materials mat)
         {
             string query = @"
-                        insert into dbo.materials (name,type,description,date)
+                        insert into materials (name,type,description,date)
                         values
                         (@name,@type,@description,@date);
                         
@@ -85,11 +85,11 @@ namespace DevsEvolutionBack.Controllers
         }
 
 
-        [HttpPut]
-        public JsonResult Put(Materials mat)
+        [HttpPut("{id}")]
+        public JsonResult Put(Materials mat, int id)
         {
             string query = @"
-                        update dbo.materials set 
+                        update materials set 
                         name =@name,
                         type =@type,
                         description =@description,
@@ -106,7 +106,7 @@ namespace DevsEvolutionBack.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@id", mat.id);
+                    myCommand.Parameters.AddWithValue("@id", id);
                     myCommand.Parameters.AddWithValue("@name", mat.name);
                     myCommand.Parameters.AddWithValue("@type", mat.type);
                     myCommand.Parameters.AddWithValue("@description", mat.description);
@@ -129,7 +129,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from dbo.materials 
+                        delete from materials 
                         where id=@id;
                         
             ";
@@ -153,6 +153,49 @@ namespace DevsEvolutionBack.Controllers
             }
 
             return new JsonResult("Deleted Successfully");
+        }
+
+        [HttpGet("{id}")]
+        public JsonResult GetById(int id)
+        {
+            string query = @"
+                        select id,name,type,description,DATE_FORMAT(date,'%Y-%m-%d') as date from 
+                        materials 
+                        where id=@id;
+                        
+            ";
+            Materials materials = null;
+            string sqlDataSource = _configuration.GetConnectionString("AppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+
+                    myReader = myCommand.ExecuteReader();
+                    
+                    if (myReader.Read())
+                    {
+                        materials = new Materials();
+                        materials.id = myReader.GetInt32("id");
+                        materials.name = myReader.GetString("name");
+                        materials.description = myReader.GetString("description");
+                        materials.date = myReader.GetString("date");
+                        materials.type = myReader.GetString("type");
+                    }
+
+                    myReader.Close();
+                    mycon.Close();
+                }
+            }
+            if (materials == null)
+            {
+                throw new SystemException("Object not found");
+            }
+
+            return new JsonResult(materials);
         }
 
     }
