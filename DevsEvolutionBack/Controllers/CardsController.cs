@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using DevsEvolutionBack.Models;
 namespace DevsEvolutionBack.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cards")]
     [ApiController]
     public class CardsController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace DevsEvolutionBack.Controllers
         {
             string query = @"
                         select id,userId,name,description,column from 
-                        dbo.tasks
+                        cards
             ";
 
             DataTable table = new DataTable();
@@ -53,7 +53,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Post(Cards car)
         {
             string query = @"
-                        insert into dbo.cards (name,description,column)
+                        insert into cards (name,description,column)
                         values
                         (@name,@description,@column);
                         
@@ -87,7 +87,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Put(Cards car)
         {
             string query = @"
-                        update dbo.cards set 
+                        update cards set 
                         name =@name,
                         description =@description,
                         column =@column
@@ -125,7 +125,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from dbo.cards 
+                        delete from cards 
                         where id=@id;
                         
             ";
@@ -149,6 +149,49 @@ namespace DevsEvolutionBack.Controllers
             }
 
             return new JsonResult("Deleted Successfully");
+        }
+
+        [HttpGet("{id}")]
+        public JsonResult GetById(int id)
+        {
+            string query = @"
+                        select id,userId,name,description,column from 
+                        cards 
+                        where id=@id;
+                        
+            ";
+            Cards cards = null;
+            string sqlDataSource = _configuration.GetConnectionString("AppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+
+                    myReader = myCommand.ExecuteReader();
+
+                    if (myReader.Read())
+                    {
+                        cards = new Cards();
+                        cards.id = myReader.GetInt32("id");
+                        cards.userId = myReader.GetInt32("userId");
+                        cards.name = myReader.GetString("name");
+                        cards.description = myReader.GetString("description");
+                        cards.column = myReader.GetString("column");
+                    }
+
+                    myReader.Close();
+                    mycon.Close();
+                }
+            }
+            if (cards == null)
+            {
+                throw new SystemException("Object not found");
+            }
+
+            return new JsonResult(cards);
         }
 
     }

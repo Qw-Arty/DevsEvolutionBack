@@ -12,7 +12,7 @@ using DevsEvolutionBack.Models;
 
 namespace DevsEvolutionBack.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks")]
     [ApiController]
     public class TasksController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace DevsEvolutionBack.Controllers
         {
             string query = @"
                         select id,cardId,name,done from 
-                        dbo.tasks
+                        tasks
             ";
 
             DataTable table = new DataTable();
@@ -54,7 +54,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Post(Tasks tas)
         {
             string query = @"
-                        insert into dbo.tasks (name,done)
+                        insert into tasks (name,done)
                         values
                         (@name,@done);
                         
@@ -87,7 +87,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Put(Tasks tas)
         {
             string query = @"
-                        update dbo.tasks set 
+                        update tasks set 
                         name =@name,
                         done =@done
                         where id=@id;
@@ -123,7 +123,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from dbo.tasks 
+                        delete from tasks 
                         where id=@id;
                         
             ";
@@ -147,6 +147,49 @@ namespace DevsEvolutionBack.Controllers
             }
 
             return new JsonResult("Deleted Successfully");
+        }
+
+        [HttpGet("{id}")]
+        public JsonResult GetById(int id)
+        {
+            string query = @"
+                        select id,cardId,name,done from 
+                        tasks
+                        where id=@id;
+                        
+            ";
+            Tasks tasks = null;
+            string sqlDataSource = _configuration.GetConnectionString("AppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+
+                    myReader = myCommand.ExecuteReader();
+
+                    if (myReader.Read())
+                    {
+                        tasks = new Tasks();
+                        tasks.id = myReader.GetInt32("id");
+                        tasks.cardId = myReader.GetInt32("cardId");
+                        tasks.name = myReader.GetString("name");
+                        tasks.done = myReader.GetBoolean("done");
+                        
+                    }
+
+                    myReader.Close();
+                    mycon.Close();
+                }
+            }
+            if (tasks == null)
+            {
+                throw new SystemException("Object not found");
+            }
+
+            return new JsonResult(tasks);
         }
 
     }
