@@ -11,9 +11,11 @@ namespace DevsEvolutionBack.Models
 
         public string name { get; set; }
 
-        public string potition { get; set; }
+        public string position { get; set; }
 
         public string description { get; set; }
+
+        public int cards_id { get; set; }
     }
 }
 

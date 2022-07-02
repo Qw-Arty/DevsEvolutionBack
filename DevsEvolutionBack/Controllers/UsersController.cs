@@ -12,7 +12,7 @@ using DevsEvolutionBack.Models;
 
 namespace DevsEvolutionBack.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -26,8 +26,8 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Get() 
         {
             string query = @"
-                        select id,name,potition,description from 
-                        dbo.users
+                        select id,name,position,description,cards_id from 
+                        users
             ";
 
             DataTable table = new DataTable();
@@ -54,9 +54,9 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Post(Users us)
         {
             string query = @"
-                        insert into dbo.users (name,potition,description)
+                        insert into users (name,position,description,cards_id)
                         values
-                        (@name,@potition,@description);
+                        (@name,@position,@description,@cards_id);
                         
             ";
 
@@ -69,8 +69,9 @@ namespace DevsEvolutionBack.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@name", us.name);
-                    myCommand.Parameters.AddWithValue("@potition", us.potition);
+                    myCommand.Parameters.AddWithValue("@position", us.position);
                     myCommand.Parameters.AddWithValue("@description", us.description);
+                    myCommand.Parameters.AddWithValue("@cards_id", us.cards_id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -88,10 +89,11 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Put(Users us)
         {
             string query = @"
-                        update dbo.users set 
+                        update users set 
                         name =@name,
-                        potition =@potition,
-                        description =@description
+                        position =@position,
+                        description =@description,
+                        cards_id =@cards_id
                         where id=@id;
                         
             ";
@@ -106,8 +108,9 @@ namespace DevsEvolutionBack.Controllers
                 {
                     myCommand.Parameters.AddWithValue("@id", us.id);
                     myCommand.Parameters.AddWithValue("@name", us.name);
-                    myCommand.Parameters.AddWithValue("@potition", us.potition);
+                    myCommand.Parameters.AddWithValue("@position", us.position);
                     myCommand.Parameters.AddWithValue("@description", us.description);
+                    myCommand.Parameters.AddWithValue("@cards_id", us.cards_id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -126,7 +129,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from dbo.users 
+                        delete from users 
                         where id=@id;
                         
             ";
@@ -150,6 +153,48 @@ namespace DevsEvolutionBack.Controllers
             }
 
             return new JsonResult("Deleted Successfully");
+        }
+
+        [HttpGet("{id}")]
+        public JsonResult Get(int id)
+        {
+            string query = @"
+                        select id,name,position,description,cards_id from 
+                        users
+                        where id=@id;
+            ";
+            Users users = null;
+            string sqlDataSource = _configuration.GetConnectionString("AppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+
+                    myReader = myCommand.ExecuteReader();
+
+                    if (myReader.Read())
+                    {
+                        users = new Users();
+                        users.id = myReader.GetInt32("id");
+                        users.name = myReader.GetString("name");
+                        users.position = myReader.GetString("position");
+                        users.description = myReader.GetString("description");
+                        users.cards_id = myReader.GetInt32("cards_id");
+                    }
+
+                    myReader.Close();
+                    mycon.Close();
+                }
+            }
+            if (users == null)
+            {
+                throw new SystemException("Object not found");
+            }
+
+            return new JsonResult(users);
         }
 
     }
