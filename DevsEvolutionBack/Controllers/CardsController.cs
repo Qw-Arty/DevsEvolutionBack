@@ -9,9 +9,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using DevsEvolutionBack.Models;
+
 namespace DevsEvolutionBack.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cards")]
     [ApiController]
     public class CardsController : ControllerBase
     {
@@ -25,8 +26,8 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Get()
         {
             string query = @"
-                        select id,userId,name,description,column from 
-                        dbo.tasks
+                        select id,userId,name,description,pillar from 
+                        cards
             ";
 
             DataTable table = new DataTable();
@@ -53,9 +54,9 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Post(Cards car)
         {
             string query = @"
-                        insert into dbo.cards (name,description,column)
+                        insert into cards (userId,name,description,pillar)
                         values
-                        (@name,@description,@column);
+                        (@userId,@name,@description,@pillar);
                         
             ";
 
@@ -67,9 +68,10 @@ namespace DevsEvolutionBack.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
+                    myCommand.Parameters.AddWithValue("@userId", car.userId);
                     myCommand.Parameters.AddWithValue("@name", car.name);
                     myCommand.Parameters.AddWithValue("@description", car.description);
-                    myCommand.Parameters.AddWithValue("@column", car.column);
+                    myCommand.Parameters.AddWithValue("@pillar", car.pillar);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -87,10 +89,10 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Put(Cards car)
         {
             string query = @"
-                        update dbo.cards set 
+                        update cards set 
                         name =@name,
                         description =@description,
-                        column =@column
+                        pillar =@pillar
                         where id=@id;
                         
             ";
@@ -104,9 +106,10 @@ namespace DevsEvolutionBack.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@id", car.id);
+                    myCommand.Parameters.AddWithValue("@userId", car.userId);
                     myCommand.Parameters.AddWithValue("@name", car.name);
                     myCommand.Parameters.AddWithValue("@description", car.description);
-                    myCommand.Parameters.AddWithValue("@column", car.column);
+                    myCommand.Parameters.AddWithValue("@pillar", car.pillar);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -125,7 +128,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from dbo.cards 
+                        delete from cards 
                         where id=@id;
                         
             ";
@@ -149,6 +152,49 @@ namespace DevsEvolutionBack.Controllers
             }
 
             return new JsonResult("Deleted Successfully");
+        }
+
+        [HttpGet("{id}")]
+        public JsonResult GetById(int id)
+        {
+            string query = @"
+                        select id,userId,name,description,pillar from 
+                        cards 
+                        where id=@id;
+                        
+            ";
+            Cards cards = null;
+            string sqlDataSource = _configuration.GetConnectionString("AppCon");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+
+                    myReader = myCommand.ExecuteReader();
+
+                    if (myReader.Read())
+                    {
+                        cards = new Cards();
+                        cards.id = myReader.GetInt32("id");
+                        cards.userId = myReader.GetInt32("userId");
+                        cards.name = myReader.GetString("name");
+                        cards.description = myReader.GetString("description");
+                        cards.pillar = myReader.GetString("pillar");
+                    }
+
+                    myReader.Close();
+                    mycon.Close();
+                }
+            }
+            if (cards == null)
+            {
+                throw new SystemException("Object not found");
+            }
+
+            return new JsonResult(cards);
         }
 
     }

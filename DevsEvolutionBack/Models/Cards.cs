@@ -15,6 +15,6 @@ namespace DevsEvolutionBack.Models
 
         public string description { get; set; }
 
-        public int column { get; set; }
+        public string pillar { get; set; }
     }
 }
