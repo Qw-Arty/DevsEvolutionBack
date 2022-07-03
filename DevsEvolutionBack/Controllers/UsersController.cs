@@ -26,7 +26,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Get() 
         {
             string query = @"
-                        select id,name,position,description from 
+                        select id,name,position,direction,description from 
                         users
             ";
 
@@ -54,9 +54,9 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Post(Users us)
         {
             string query = @"
-                        insert into users (name,position,description)
+                        insert into users (name,position,direction,description)
                         values
-                        (@name,@position,@description);
+                        (@name,@position,@direction,@description);
                         
             ";
 
@@ -70,6 +70,7 @@ namespace DevsEvolutionBack.Controllers
                 {
                     myCommand.Parameters.AddWithValue("@name", us.name);
                     myCommand.Parameters.AddWithValue("@position", us.position);
+                    myCommand.Parameters.AddWithValue("@direction", us.direction);
                     myCommand.Parameters.AddWithValue("@description", us.description);
 
                     myReader = myCommand.ExecuteReader();
@@ -91,6 +92,7 @@ namespace DevsEvolutionBack.Controllers
                         update users set 
                         name =@name,
                         position =@position,
+                        direction =@direction,
                         description =@description
                         where id=@id;
                         
@@ -107,6 +109,7 @@ namespace DevsEvolutionBack.Controllers
                     myCommand.Parameters.AddWithValue("@id", us.id);
                     myCommand.Parameters.AddWithValue("@name", us.name);
                     myCommand.Parameters.AddWithValue("@position", us.position);
+                    myCommand.Parameters.AddWithValue("@direction", us.direction);
                     myCommand.Parameters.AddWithValue("@description", us.description);
 
                     myReader = myCommand.ExecuteReader();
@@ -156,7 +159,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Get(int id)
         {
             string query = @"
-                        select id,name,position,description from 
+                        select id,name,position,direction,description from 
                         users
                         where id=@id;
             ";
@@ -178,6 +181,7 @@ namespace DevsEvolutionBack.Controllers
                         users.id = myReader.GetInt32("id");
                         users.name = myReader.GetString("name");
                         users.position = myReader.GetString("position");
+                        users.position = myReader.GetString("direction");
                         users.description = myReader.GetString("description");
                     }
 

@@ -13,6 +13,8 @@ namespace DevsEvolutionBack.Models
 
         public string position { get; set; }
 
+        public string direction { get; set; }
+
         public string description { get; set; }
 
     }
