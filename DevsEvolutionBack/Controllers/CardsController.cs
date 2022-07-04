@@ -157,19 +157,25 @@ namespace DevsEvolutionBack.Controllers
         [HttpGet("{id}")]
         public JsonResult GetById(int id)
         {
-            string query = @"
-                        select id,userId,name,description,pillar from 
-                        cards 
-                        where id=@id;
-                        
+            string CardQuery = @"
+                        select cards.description,cards.name,cards.id,pillar,users.id,users.name,position,direction from 
+                        cards inner join users on userId = users.id
+                        where cards.id=@id;
             ";
-            Cards cards = null;
+            string TaskQuery = @"
+                        select id,text,done from 
+                        tasks
+                        where cardId=@id;
+            ";
+            List<Tasks> tasks = new List<Tasks>();
+            Users user = new Users();
+            Cards card = new Cards();
             string sqlDataSource = _configuration.GetConnectionString("AppCon");
             MySqlDataReader myReader;
             using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
             {
                 mycon.Open();
-                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                using (MySqlCommand myCommand = new MySqlCommand(CardQuery, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@id", id);
 
@@ -177,24 +183,45 @@ namespace DevsEvolutionBack.Controllers
 
                     if (myReader.Read())
                     {
-                        cards = new Cards();
-                        cards.id = myReader.GetInt32("id");
-                        cards.userId = myReader.GetInt32("userId");
-                        cards.name = myReader.GetString("name");
-                        cards.description = myReader.GetString("description");
-                        cards.pillar = myReader.GetString("pillar");
+                        card.id = (int)myReader.GetValue(2);
+                        card.name = (string)myReader.GetValue(1);
+                        card.description = (string)myReader.GetValue(0);
+                        user.id = (int)myReader.GetValue(4);
+                        card.userId = (int)myReader.GetValue(4);
+                        user.name = (string)myReader.GetValue(5);
+                        card.pillar = myReader.GetString("pillar");
+                        user.direction = myReader.GetString("direction");
+                        user.position = myReader.GetString("position");
                     }
 
                     myReader.Close();
-                    mycon.Close();
                 }
+                using (MySqlCommand myCommand = new MySqlCommand(TaskQuery, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@id", id);
+
+                    myReader = myCommand.ExecuteReader();
+
+                    while (myReader.Read())
+                    {
+                        Tasks task = new Tasks();
+                        task.id = myReader.GetInt32("id");
+                        task.text = myReader.GetString("text");
+                        task.done = myReader.GetBoolean("done");
+                        tasks.Add(task);
+                    }
+                    myReader.Close();
+                }
+                mycon.Close();
             }
-            if (cards == null)
+            if (tasks == null || user == null || card == null)
             {
                 throw new SystemException("Object not found");
             }
+            card.Users = user;
+            card.Task = tasks;
 
-            return new JsonResult(cards);
+            return new JsonResult(card);
         }
 
     }

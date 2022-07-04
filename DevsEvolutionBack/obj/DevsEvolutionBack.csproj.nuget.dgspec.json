@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tukta\\Downloads\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj": {}
+    "C:\\Users\\user\\source\\repos\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tukta\\Downloads\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj": {
+    "C:\\Users\\user\\source\\repos\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tukta\\Downloads\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj",
+        "projectUniqueName": "C:\\Users\\user\\source\\repos\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj",
         "projectName": "DevsEvolutionBack",
-        "projectPath": "C:\\Users\\tukta\\Downloads\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj",
-        "packagesPath": "C:\\Users\\tukta\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tukta\\Downloads\\DevsEvolutionBack\\DevsEvolutionBack\\obj\\",
+        "projectPath": "C:\\Users\\user\\source\\repos\\DevsEvolutionBack\\DevsEvolutionBack\\DevsEvolutionBack.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\user\\source\\repos\\DevsEvolutionBack\\DevsEvolutionBack\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\tukta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

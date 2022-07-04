@@ -17,6 +17,8 @@ namespace DevsEvolutionBack.Models
 
         public string description { get; set; }
 
+        public List<Cards> Cards { get; set; }
+
     }
 }
 

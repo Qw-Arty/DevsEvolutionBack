@@ -14,5 +14,7 @@ namespace DevsEvolutionBack.Models
         public string text { get; set; }
 
         public bool done { get; set; }
+
+        public Cards Cards { get; set; }
     }
 }

@@ -22,6 +22,10 @@ namespace DevsEvolutionBack.Models
         public string description { get; set; }
 
         public string pillar { get; set; }
+
+        public List<Tasks> Task { get; set; }
+
+        public Users Users { get; set; }
         
     }
 }
