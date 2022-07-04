@@ -47,6 +47,13 @@ Swashbuckle  ASP.NET Core
 
 ![photo_2022-06-22_15-35-54](https://user-images.githubusercontent.com/86678856/177118861-c88dc1c6-7dc7-40a1-a6e1-c1a7b7bbfa94.jpg)
 
+Схема баззы данных.
+
+
+
+![photo_2022-06-24_11-00-19](https://user-images.githubusercontent.com/86678856/177119122-276bcae1-5796-4280-a885-5001e383695b.jpg)
+
+
 
 
 
