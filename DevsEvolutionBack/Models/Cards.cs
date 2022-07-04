@@ -7,6 +7,12 @@ namespace DevsEvolutionBack.Models
 {
     public class Cards
     {
+        internal string text;
+
+        internal string position;
+
+        internal string direction;
+
         public int id { get; set; }
 
         public int userId { get; set; }
@@ -16,5 +22,6 @@ namespace DevsEvolutionBack.Models
         public string description { get; set; }
 
         public string pillar { get; set; }
+        
     }
 }

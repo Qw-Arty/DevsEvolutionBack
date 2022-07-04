@@ -26,7 +26,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Get()
         {
             string query = @"
-                        select id,cardId,name,done from 
+                        select id,cardId,text,done from 
                         tasks
             ";
 
@@ -54,9 +54,9 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult Post(Tasks tas)
         {
             string query = @"
-                        insert into tasks (cardId,name,done)
+                        insert into tasks (cardId,text,done)
                         values
-                        (@cardId,@name,@done);
+                        (@cardId,@text,@done);
                         
             ";
 
@@ -69,7 +69,7 @@ namespace DevsEvolutionBack.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@cardId", tas.cardId);
-                    myCommand.Parameters.AddWithValue("@name", tas.name);
+                    myCommand.Parameters.AddWithValue("@text", tas.text);
                     myCommand.Parameters.AddWithValue("@done", tas.done);
 
                     myReader = myCommand.ExecuteReader();
@@ -90,7 +90,7 @@ namespace DevsEvolutionBack.Controllers
             string query = @"
                         update tasks set 
                         cardId =@cardId,
-                        name =@name,
+                        text =@text,
                         done =@done
                         where id=@id;
                         
@@ -105,8 +105,8 @@ namespace DevsEvolutionBack.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@id", tas.id);
-                    myCommand.Parameters.AddWithValue("@cardId", tas.name);
-                    myCommand.Parameters.AddWithValue("@name", tas.name);
+                    myCommand.Parameters.AddWithValue("@cardId", tas.cardId);
+                    myCommand.Parameters.AddWithValue("@text", tas.text);
                     myCommand.Parameters.AddWithValue("@done", tas.done);
 
                     myReader = myCommand.ExecuteReader();
@@ -156,7 +156,7 @@ namespace DevsEvolutionBack.Controllers
         public JsonResult GetById(int id)
         {
             string query = @"
-                        select id,cardId,name,done from 
+                        select id,cardId,text,done from 
                         tasks
                         where id=@id;
                         
@@ -178,7 +178,7 @@ namespace DevsEvolutionBack.Controllers
                         tasks = new Tasks();
                         tasks.id = myReader.GetInt32("id");
                         tasks.cardId = myReader.GetInt32("cardId");
-                        tasks.name = myReader.GetString("name");
+                        tasks.text = myReader.GetString("text");
                         tasks.done = myReader.GetBoolean("done");
                         
                     }

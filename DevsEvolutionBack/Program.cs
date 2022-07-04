@@ -7,10 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(c =>
-{
-    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-});
+
 
 
 //JSON Serializer
@@ -23,6 +20,8 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMvc();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,7 +30,10 @@ app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Hello World!");
 
-
+app.UseCors(builder => builder.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+);
 
 app.UseRouting();
 
