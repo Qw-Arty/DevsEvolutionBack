@@ -22,3 +22,17 @@
 <h3 align="center">Индивидуальный план-окно в котором пользователь будет отслеживать свой прогресс и по мере его выполнения менять статус.</h3>
 <h3 align="center">Коллеги - окно в котором будут показываться пользователи сайта, в этом окне можно будет добовлять новых пользователей, которые начали обучение.</h3>
 
+
+<h3 align="center">Для написания проекта были использованы следующие библиотеки и фреймворки.</h3>
+Microsoft.Diagnostics.EntityFrameworkCore
+Microsoft.AspNetCore.Mvc
+microsoft entity framework core
+microsoft entity framework core design
+microsoft entity framework core InMemory
+microsoft entity framework core Tools
+Mysql Data
+Mysql Data Entities
+Mysql Data Entities FraemWork
+Mysql Data Entities FraemWork Core
+Swashbuckle  ASP.NET Core
+
