@@ -30,9 +30,69 @@ microsoft entity framework core
 microsoft entity framework core design
 microsoft entity framework core InMemory
 microsoft entity framework core Tools
+
 Mysql Data
+
+![photo_2022-06-24_11-00-19](https://user-images.githubusercontent.com/86678856/177118706-bd5df184-df63-4fd6-8208-21c661f60463.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Mysql Data Entities
 Mysql Data Entities FraemWork
 Mysql Data Entities FraemWork Core
 Swashbuckle  ASP.NET Core
+
+
+
+
+
+
+
+Краткое описание функциональности.
+
 
