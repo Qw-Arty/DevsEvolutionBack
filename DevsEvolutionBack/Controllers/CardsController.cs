@@ -25,28 +25,72 @@ namespace DevsEvolutionBack.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            string query = @"
-                        select id,userId,name,description,pillar from 
-                        cards
+            string CardQuery = @"
+                        select cards.description,cards.name,cards.id,pillar,users.id,users.name,position,direction from 
+                        cards inner join users on userId = users.id;
+            ";
+            string TaskQuery = @"
+                        select id,text,done from 
+                        tasks
+                        where cardId=@id;
             ";
 
-            DataTable table = new DataTable();
+            List<Cards> cards = new List<Cards>();
             string sqlDataSource = _configuration.GetConnectionString("AppCon");
             MySqlDataReader myReader;
             using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
             {
                 mycon.Open();
-                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                using (MySqlCommand myCommand = new MySqlCommand(CardQuery, mycon))
                 {
+
                     myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
+
+                    while (myReader.Read())
+                    {
+                        Cards card = new Cards();
+                        Users user = new Users();
+                        card.id = (int)myReader.GetValue(2);
+                        card.name = (string)myReader.GetValue(1);
+                        card.description = (string)myReader.GetValue(0);
+                        user.id = (int)myReader.GetValue(4);
+                        card.userId = (int)myReader.GetValue(4);
+                        user.name = (string)myReader.GetValue(5);
+                        card.pillar = myReader.GetString("pillar");
+                        user.direction = myReader.GetString("direction");
+                        user.position = myReader.GetString("position");
+                        card.Users = user;
+                        card.Task = new List<Tasks>();
+                        cards.Add(card);
+                    }
 
                     myReader.Close();
-                    mycon.Close();
                 }
+                foreach (var card in cards)
+                {
+                    using (MySqlCommand myCommand = new MySqlCommand(TaskQuery, mycon))
+                    {
+                        myCommand.Parameters.AddWithValue("@id", card.id);
+
+                        myReader = myCommand.ExecuteReader();
+
+                        while (myReader.Read())
+                        {
+                            Tasks task = new Tasks();
+                            task.id = myReader.GetInt32("id");
+                            task.text = myReader.GetString("text");
+                            task.done = myReader.GetBoolean("done");
+                            card.Task.Add(task);
+
+                        }
+                        myReader.Close();
+                    }
+                }
+
+                mycon.Close();
             }
 
-            return new JsonResult(table);
+            return new JsonResult(cards);
         }
 
 
