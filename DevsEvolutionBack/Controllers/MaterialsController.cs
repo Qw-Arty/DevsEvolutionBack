@@ -85,8 +85,8 @@ namespace DevsEvolutionBack.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public JsonResult Put(Materials mat, int id)
+        [HttpPut]
+        public JsonResult Put(Materials mat)
         {
             string query = @"
                         update materials set 
@@ -106,7 +106,7 @@ namespace DevsEvolutionBack.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@id", id);
+                    myCommand.Parameters.AddWithValue("@id", mat.id);
                     myCommand.Parameters.AddWithValue("@name", mat.name);
                     myCommand.Parameters.AddWithValue("@type", mat.type);
                     myCommand.Parameters.AddWithValue("@description", mat.description);
